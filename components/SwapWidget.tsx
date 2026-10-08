@@ -6,6 +6,9 @@ import { EthereumProvider } from "@lifi/widget-provider-ethereum";
 
 // Robinhood Chain — Arbitrum Orbit L2, native gas token ETH.
 const ROBINHOOD_CHAIN_ID = 4663;
+const ETHEREUM_CHAIN_ID = 1;
+// Native ETH placeholder address used by LI.FI for the native gas token.
+const NATIVE_ETH = "0x0000000000000000000000000000000000000000";
 
 export default function SwapWidget() {
   const integrator = process.env.NEXT_PUBLIC_INTEGRATOR || "rhswap";
@@ -22,8 +25,26 @@ export default function SwapWidget() {
       // independent (Jumper-style). Do NOT use mode: "split" here: with no
       // modeOptions it defaults to the Swap tab, which forces toChain to
       // follow fromChain and hides the To chain selector.
-      variant: "compact",
+      // Wide variant shows the route list in a second panel to the right
+      // on desktop; below the 852px breakpoint the widget falls back to
+      // the compact single-column layout automatically (useWideVariant).
+      variant: "wide",
       appearance: "dark",
+      // Rename the main heading from "Exchange" to "Swap & Bridge".
+      // MainPage renders t('header.exchange') in default mode; the
+      // existing header.swapAndBridge key already holds "Swap & Bridge".
+      languageResources: {
+        en: {
+          header: {
+            exchange: "Swap & Bridge",
+          },
+        },
+      },
+      // Defaults: ETH on Ethereum -> ETH on Robinhood Chain.
+      // Independent: setting both up front never links the two fields.
+      fromChain: ETHEREUM_CHAIN_ID,
+      fromToken: NATIVE_ETH,
+      toToken: NATIVE_ETH,
       // Pre-select Robinhood Chain as the destination.
       toChain: ROBINHOOD_CHAIN_ID,
       ...(apiKey ? { apiKey } : {}),

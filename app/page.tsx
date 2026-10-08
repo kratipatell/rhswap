@@ -62,16 +62,22 @@ export default function Home() {
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-volt">
           Powered by LI.FI
         </p>
-        <h1 className="max-w-xl text-center text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-[42px] sm:leading-[1.1]">
-          Swap &amp; bridge to Robinhood Chain
+        <h1 className="max-w-2xl text-balance text-center text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-[42px] sm:leading-[1.1]">
+          Swap &amp; bridge to{" "}
+          <span className="whitespace-nowrap">Robinhood Chain</span>
         </h1>
         <p className="mt-4 max-w-md text-center text-[15px] leading-relaxed text-zinc-400">
           Best-price routing across bridges and DEXs, straight into chain ID
           4663. Connect a wallet to begin.
         </p>
 
-        <div className="widget-glow mt-10 w-full max-w-[420px]">
-          <SwapWidgetLoader />
+        <div className="widget-glow mt-10 flex w-full max-w-[1080px] justify-center">
+          {/* Compact single column on mobile (widget is 420px); full
+              two-panel width once the widget passes its 852px breakpoint:
+              600px form + 24px gap + 436px routes panel. */}
+          <div className="w-full max-w-[420px] md:max-w-[1060px]">
+            <SwapWidgetLoader />
+          </div>
         </div>
       </main>
 
