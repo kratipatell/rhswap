@@ -18,8 +18,10 @@ export default function SwapWidget() {
     return {
       // Required in v4 — also passed as the LiFiWidget prop below.
       integrator,
-      // Split mode renders the Swap / Bridge tab switcher (Jumper-style).
-      mode: "split",
+      // Default (unified) mode keeps From and To chain selection fully
+      // independent (Jumper-style). Do NOT use mode: "split" here: with no
+      // modeOptions it defaults to the Swap tab, which forces toChain to
+      // follow fromChain and hides the To chain selector.
       variant: "compact",
       appearance: "dark",
       // Pre-select Robinhood Chain as the destination.
