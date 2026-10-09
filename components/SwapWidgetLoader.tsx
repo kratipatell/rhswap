@@ -2,9 +2,12 @@
 
 import dynamic from "next/dynamic";
 import { WidgetSkeleton } from "@lifi/widget";
+import WidgetErrorBoundary from "@/components/WidgetErrorBoundary";
 
 // The widget touches browser wallet APIs and is not SSR-safe, so it stays
 // behind a client-only dynamic boundary with a skeleton placeholder.
+// Any render/runtime failure inside the widget is caught by
+// WidgetErrorBoundary, which shows a friendly retry message.
 const SwapWidget = dynamic(() => import("@/components/SwapWidget"), {
   ssr: false,
   loading: () => (
@@ -22,5 +25,9 @@ const SwapWidget = dynamic(() => import("@/components/SwapWidget"), {
 });
 
 export default function SwapWidgetLoader() {
-  return <SwapWidget />;
+  return (
+    <WidgetErrorBoundary>
+      <SwapWidget />
+    </WidgetErrorBoundary>
+  );
 }

@@ -1,0 +1,169 @@
+[1mdiff --git a/.env.example b/.env.example[m
+[1mindex b6e1abf..1616617 100644[m
+[1m--- a/.env.example[m
+[1m+++ b/.env.example[m
+[36m@@ -10,3 +10,6 @@[m [mNEXT_PUBLIC_LIFI_API_KEY=[m
+ #[m
+ # Integrator name sent to LI.FI for attribution/fees.[m
+ NEXT_PUBLIC_INTEGRATOR=rhswap[m
+[32m+[m[32m#[m
+[32m+[m[32m# Public site URL used for metadataBase and OG/Twitter card URLs.[m
+[32m+[m[32mNEXT_PUBLIC_SITE_URL=https://rhdex.xyz[m
+[1mdiff --git a/app/globals.css b/app/globals.css[m
+[1mindex d632fa2..b000c85 100644[m
+[1m--- a/app/globals.css[m
+[1m+++ b/app/globals.css[m
+[36m@@ -12,6 +12,9 @@[m
+ html,[m
+ body {[m
+   height: 100%;[m
+[32m+[m[32m  /* The glow pseudo-element behind the widget extends past the card —[m
+[32m+[m[32m     clip horizontal overflow so it never causes a sideways scrollbar. */[m
+[32m+[m[32m  overflow-x: clip;[m
+ }[m
+ [m
+ body {[m
+[1mdiff --git a/app/layout.tsx b/app/layout.tsx[m
+[1mindex 9db73f6..f7cef55 100644[m
+[1m--- a/app/layout.tsx[m
+[1m+++ b/app/layout.tsx[m
+[36m@@ -1,5 +1,6 @@[m
+[31m-import type { Metadata } from "next";[m
+[32m+[m[32mimport type { Metadata, Viewport } from "next";[m
+ import { Inter } from "next/font/google";[m
+[32m+[m[32mimport { brand } from "@/config/brand";[m
+ import "./globals.css";[m
+ [m
+ const inter = Inter({[m
+[36m@@ -8,10 +9,47 @@[m [mconst inter = Inter({[m
+   display: "swap",[m
+ });[m
+ [m
+[32m+[m[32mconst siteUrl =[m
+[32m+[m[32m  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || brand.siteUrl;[m
+[32m+[m
+ export const metadata: Metadata = {[m
+[31m-  title: "RHSWAP — Swap & bridge to Robinhood Chain",[m
+[31m-  description:[m
+[31m-    "Swap and bridge tokens to Robinhood Chain (chain ID 4663) with best-price routing powered by LI.FI.",[m
+[32m+[m[32m  metadataBase: new URL(siteUrl),[m
+[32m+[m[32m  title: {[m
+[32m+[m[32m    default: `${brand.name} — ${brand.tagline}`,[m
+[32m+[m[32m    template: `%s · ${brand.name}`,[m
+[32m+[m[32m  },[m
+[32m+[m[32m  description: brand.description,[m
+[32m+[m[32m  applicationName: brand.name,[m
+[32m+[m[32m  openGraph: {[m
+[32m+[m[32m    type: "website",[m
+[32m+[m[32m    url: "/",[m
+[32m+[m[32m    siteName: brand.name,[m
+[32m+[m[32m    title: `${brand.name} — ${brand.tagline}`,[m
+[32m+[m[32m    description: brand.description,[m
+[32m+[m[32m    images: [[m
+[32m+[m[32m      {[m
+[32m+[m[32m        url: "/og.png",[m
+[32m+[m[32m        width: 1200,[m
+[32m+[m[32m        height: 630,[m
+[32m+[m[32m        alt: `${brand.name} — ${brand.tagline}`,[m
+[32m+[m[32m      },[m
+[32m+[m[32m    ],[m
+[32m+[m[32m  },[m
+[32m+[m[32m  twitter: {[m
+[32m+[m[32m    card: "summary_large_image",[m
+[32m+[m[32m    title: `${brand.name} — ${brand.tagline}`,[m
+[32m+[m[32m    description: brand.description,[m
+[32m+[m[32m    images: ["/og.png"],[m
+[32m+[m[32m  },[m
+[32m+[m[32m  icons: {[m
+[32m+[m[32m    icon: "/favicon.svg",[m
+[32m+[m[32m  },[m
+[32m+[m[32m};[m
+[32m+[m
+[32m+[m[32mexport const viewport: Viewport = {[m
+[32m+[m[32m  width: "device-width",[m
+[32m+[m[32m  initialScale: 1,[m
+[32m+[m[32m  themeColor: brand.colors.void,[m
+ };[m
+ [m
+ export default function RootLayout({[m
+[1mdiff --git a/app/page.tsx b/app/page.tsx[m
+[1mindex 735d2ca..9ab72f9 100644[m
+[1m--- a/app/page.tsx[m
+[1m+++ b/app/page.tsx[m
+[36m@@ -12,25 +12,28 @@[m [mexport default function Home() {[m
+     <div className="flex min-h-full flex-1 flex-col">[m
+       {/* Header */}[m
+       <header className="sticky top-0 z-10 border-b border-white/5 bg-void/80 backdrop-blur">[m
+[31m-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">[m
+[31m-          <Link href="/" className="flex items-center gap-2.5">[m
+[32m+[m[32m        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-2 px-4 sm:px-6">[m
+[32m+[m[32m          <Link[m
+[32m+[m[32m            href="/"[m
+[32m+[m[32m            className="flex shrink-0 items-center gap-2.5"[m
+[32m+[m[32m          >[m
+             <span[m
+               aria-hidden[m
+               className="inline-block h-5 w-5 rounded-[6px] bg-volt shadow-[0_0_16px_rgba(204,255,0,0.5)]"[m
+             />[m
+[31m-            <span className="text-[17px] font-extrabold tracking-[0.18em] text-white">[m
+[32m+[m[32m            <span className="text-[15px] font-extrabold tracking-[0.14em] text-white sm:text-[17px] sm:tracking-[0.18em]">[m
+               RHSWAP[m
+             </span>[m
+           </Link>[m
+ [m
+[31m-          <nav className="flex items-center gap-1 sm:gap-2">[m
+[32m+[m[32m          <nav className="flex min-w-0 items-center gap-0.5 sm:gap-2">[m
+             {NAV.map((item) =>[m
+               item.active ? ([m
+                 <a[m
+                   key={item.label}[m
+                   href={item.href}[m
+                   aria-current="page"[m
+[31m-                  className="rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold text-white"[m
+[32m+[m[32m                  className="rounded-full bg-white/10 px-3 py-1.5 text-[13px] font-semibold text-white sm:px-4 sm:text-sm"[m
+                 >[m
+                   {item.label}[m
+                 </a>[m
+[36m@@ -39,10 +42,12 @@[m [mexport default function Home() {[m
+                   key={item.label}[m
+                   aria-disabled[m
+                   title="Coming soon"[m
+[31m-                  className="flex cursor-not-allowed items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium text-zinc-500"[m
+[32m+[m[32m                  className="flex cursor-not-allowed items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium text-zinc-500 sm:px-4 sm:text-sm"[m
+                 >[m
+                   {item.label}[m
+[31m-                  <span className="rounded-full border border-white/10 px-1.5 py-px text-[10px] font-semibold uppercase tracking-wider text-zinc-500">[m
+[32m+[m[32m                  {/* "Soon" badges hide on very small screens (375px) to[m
+[32m+[m[32m                      keep the header from overflowing. */}[m
+[32m+[m[32m                  <span className="hidden rounded-full border border-white/10 px-1.5 py-px text-[10px] font-semibold uppercase tracking-wider text-zinc-500 min-[420px]:inline-block">[m
+                     Soon[m
+                   </span>[m
+                 </span>[m
+[1mdiff --git a/components/SwapWidgetLoader.tsx b/components/SwapWidgetLoader.tsx[m
+[1mindex 7ca3ae4..e23c8c4 100644[m
+[1m--- a/components/SwapWidgetLoader.tsx[m
+[1m+++ b/components/SwapWidgetLoader.tsx[m
+[36m@@ -2,9 +2,12 @@[m
+ [m
+ import dynamic from "next/dynamic";[m
+ import { WidgetSkeleton } from "@lifi/widget";[m
+[32m+[m[32mimport WidgetErrorBoundary from "@/components/WidgetErrorBoundary";[m
+ [m
+ // The widget touches browser wallet APIs and is not SSR-safe, so it stays[m
+ // behind a client-only dynamic boundary with a skeleton placeholder.[m
+[32m+[m[32m// Any render/runtime failure inside the widget is caught by[m
+[32m+[m[32m// WidgetErrorBoundary, which shows a friendly retry message.[m
+ const SwapWidget = dynamic(() => import("@/components/SwapWidget"), {[m
+   ssr: false,[m
+   loading: () => ([m
+[36m@@ -22,5 +25,9 @@[m [mconst SwapWidget = dynamic(() => import("@/components/SwapWidget"), {[m
+ });[m
+ [m
+ export default function SwapWidgetLoader() {[m
+[31m-  return <SwapWidget />;[m
+[32m+[m[32m  return ([m
+[32m+[m[32m    <WidgetErrorBoundary>[m
+[32m+[m[32m      <SwapWidget />[m
+[32m+[m[32m    </WidgetErrorBoundary>[m
+[32m+[m[32m  );[m
+ }[m

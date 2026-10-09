@@ -12,6 +12,9 @@
 html,
 body {
   height: 100%;
+  /* The glow pseudo-element behind the widget extends past the card —
+     clip horizontal overflow so it never causes a sideways scrollbar. */
+  overflow-x: clip;
 }
 
 body {
